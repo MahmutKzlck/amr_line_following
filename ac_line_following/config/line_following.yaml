@@ -1,0 +1,77 @@
+line_detector_node:
+  ros__parameters:
+
+    # Kamera
+    # Dahili kamera aktarımıdır. Harici GUI uygulamaları buna abone olmamalıdır.
+    image_topic: "/ac_line_following/internal/camera/image_raw"
+
+    # Algılama (varsayılan ayarlar açık renk zemindeki koyu/siyah çizgi içindir)
+    roi_start_ratio: 0.55
+    threshold: 80
+    invert_threshold: true
+    blur_kernel_size: 5
+    morph_kernel_size: 5
+    min_contour_area: 150.0
+
+    # Görüntü kenarlarındaki sabit araç parçalarını yok say.
+    roi_left_ratio: 0.10
+    roi_right_ratio: 0.90
+
+    # Beklenen bant geometrisine uymayan bölgeleri reddet.
+    minimum_line_width_ratio: 0.015
+    maximum_line_width_ratio: 0.14
+    minimum_line_height_ratio: 0.20
+    expected_line_width_ratio: 0.06
+
+    # Takip edilen merkezin banttan gölgeye sıçramasını engelle.
+    maximum_center_jump_ratio: 0.20
+    tracking_reset_frames: 5
+
+    # Hata ayıklama
+    # İşaretlenmiş algılama görüntüsünü OpenCV ile yerel olarak göster.
+    show_image: true
+    show_mask: false
+    display_width: 1280
+    display_height: 720
+    publish_debug_image: true
+    jpeg_quality: 75
+
+
+line_controller_node:
+  ros__parameters:
+
+    # Kontrol döngüsü
+    control_frequency: 30.0
+
+    # Hareket
+    # linear_speed, çizgi ortadayken kullanılacak en yüksek ileri hızdır.
+    linear_speed: 0.02
+    minimum_linear_speed: 0.01
+    maximum_angular_speed: 0.20
+
+    # abs(line_error) değeri 1.0'a yaklaştıkça ileri hızı azalt.
+    slowdown_gain: 0.8
+
+    # Komut yumuşatma sınırları (m/s^2 ve rad/s^2).
+    maximum_linear_acceleration: 0.05
+    maximum_angular_acceleration: 0.8
+
+    # Güvenlik
+    detection_timeout: 0.20
+
+    # Topic'ler
+    cmd_vel_topic: "/cmd_vel"
+    line_error_topic: "/line_error"
+    line_detected_topic: "/line_detected"
+
+    # PID yönlendirme
+    kp: 0.8
+    ki: 0.0
+    kd: 0.08
+    integral_limit: 0.5
+
+    # Görüntü hatası sağ tarafta pozitif, ROS angular.z ise sol yönde pozitiftir.
+    steering_sign: -1.0
+
+    # Düğüm yalnızca start_controller:=true açıkça verildiğinde başlatılır.
+    enabled_on_start: true

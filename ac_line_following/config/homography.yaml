@@ -1,0 +1,5 @@
+homography:
+  calibrated: false
+
+  # Perspektif dönüşüm matrisi kamera kalibrasyonundan
+  # sonra eklenecektir.
